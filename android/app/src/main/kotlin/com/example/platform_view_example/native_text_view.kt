@@ -1,14 +1,15 @@
 package com.example.platform_view_example
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 
@@ -26,15 +27,16 @@ class NativeTextView(
     private var counter: Int = creationParams?.get("counter")?.toString()?.toIntOrNull() ?: 0
 
     init {
+
         linearLayout.apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
             setPadding(16, 16, 16, 16)
-            background = createBorderDrawable(context)
-            setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+            background = createBorderDrawable()
         }
 
         titleTextView.apply {
@@ -42,19 +44,36 @@ class NativeTextView(
             setTypeface(null, Typeface.BOLD)
             textSize = 24F
             textAlignment = View.TEXT_ALIGNMENT_CENTER
+            setTextColor(Color.parseColor("#333333"))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             setPadding(0, 0, 0, 16)
         }
 
         counterTextView.apply {
             text = "Counter: $counter"
             setTypeface(null, Typeface.BOLD)
-            textSize = 30F
+            textSize = 25F
             textAlignment = View.TEXT_ALIGNMENT_CENTER
+            setTextColor(Color.parseColor("#1E88E5"))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             setPadding(0, 0, 0, 20)
         }
 
         button.apply {
-            text = creationParams?.get("buttonText") as? String ?: "Increment"
+            text = "Increment"
+            setTextColor(Color.WHITE)
+            setBackgroundColor(Color.parseColor("#1E88E5"))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setPadding(25, 25, 25, 25)
             setOnClickListener { incrementCounter() }
         }
 
@@ -75,17 +94,18 @@ class NativeTextView(
         }
     }
 
-    private fun createBorderDrawable(context: Context): GradientDrawable {
+    private fun createBorderDrawable(): GradientDrawable {
         return GradientDrawable().apply {
-            setColor(ContextCompat.getColor(context, android.R.color.white))
-            setStroke(4, ContextCompat.getColor(context, android.R.color.darker_gray))
-            cornerRadius = 16f
+            setColor(Color.parseColor("#FFFFFF"))
+            setStroke(2, Color.parseColor("#5b8fe3"))
+            cornerRadius = 10f
         }
     }
 
     private fun incrementCounter() {
         counter++
         updateCounterText()
+
         methodChannel.invokeMethod("updateCounter", counter)
     }
 
